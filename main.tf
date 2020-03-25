@@ -42,7 +42,6 @@ resource "aws_lb_target_group_attachment" "this" {
   port             = lookup(var.targets[count.index], "port")
 }
 
-
 data "aws_route53_zone" "zone" {
   count        = var.zone_name == "" ? 0 : 1
   name         = "${var.zone_name}."
