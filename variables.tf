@@ -11,7 +11,7 @@ variable "internal" {
 variable "load_balancer_type" {
   type        = string
   description = "Whether it is an application or network load balancer"
-  default     = "application"
+  default     = "network"
 }
 
 variable "security_groups" {

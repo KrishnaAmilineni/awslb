@@ -14,7 +14,7 @@
 | enable\_deletion\_protection | Toggle the deletion protection on the Load Balancer | `bool` | `false` | no |
 | internal | Sets the LB to external or internal | `bool` | n/a | yes |
 | listner\_configuration | Load Balancer listener configuration | `list(map(any))` | `[]` | no |
-| load\_balancer\_type | Whether it is an application or network load balancer | `string` | `"application"` | no |
+| load\_balancer\_type | Whether it is an application or network load balancer | `string` | `"network"` | no |
 | name | load balancer name | `string` | n/a | yes |
 | security\_groups | IDs of security groups for Load Balancer | `list(string)` | `[]` | no |
 | subnets | List of Subnet IDs for the Load Balancer | `list(string)` | n/a | yes |
