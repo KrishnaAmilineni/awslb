@@ -15,24 +15,39 @@ resource "aws_lb_listener" "this" {
   load_balancer_arn = aws_lb.this.arn
   port              = lookup(var.listner_configuration[count.index], "port")
   protocol          = lookup(var.listner_configuration[count.index], "protocol")
+  certificate_arn   = lookup(var.listner_configuration[count.index], "certificate_arn", "") != "" ? lookup(var.listner_configuration[count.index], "certificate_arn") : ""
+  ssl_policy        = lookup(var.listner_configuration[count.index], "ssl_policy", "") != "" ? lookup(var.listner_configuration[count.index], "ssl_policy") : ""
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.this[count.index].arn
   }
+
+  depends_on = [aws_lb_target_group.this]
 }
 
 resource "aws_lb_target_group" "this" {
-  count    = length(var.listner_configuration)
-  name     = lower("${lookup(var.listner_configuration[count.index], "type")}-tg")
-  port     = lookup(var.listner_configuration[count.index], "port")
-  protocol = lookup(var.listner_configuration[count.index], "protocol")
-  vpc_id   = var.vpc_id
-  tags     = var.tags
+  count                = length(var.listner_configuration)
+  name                 = lower(lookup(var.listner_configuration[count.index], "type"))
+  port                 = lookup(var.listner_configuration[count.index], "port")
+  protocol             = lookup(var.listner_configuration[count.index], "protocol") == "TLS" ? "TCP" : lookup(var.listner_configuration[count.index], "protocol")
+  deregistration_delay = 10
+  vpc_id               = var.vpc_id
+  tags                 = var.tags
 
   depends_on = [
     aws_lb.this
   ]
+
+  stickiness {
+    enabled = false
+    type    = "lb_cookie"
+  }
+
+  lifecycle {
+    ignore_changes = [name]
+  }
+
 }
 
 resource "aws_lb_target_group_attachment" "this" {
@@ -40,6 +55,11 @@ resource "aws_lb_target_group_attachment" "this" {
   target_group_arn = aws_lb_target_group.this[lookup(var.targets[count.index], "target_index")].arn
   target_id        = lookup(var.targets[count.index], "instanceId")
   port             = lookup(var.targets[count.index], "port")
+
+  depends_on = [
+    aws_lb_target_group.this,
+    aws_lb_listener.this
+  ]
 }
 
 data "aws_route53_zone" "zone" {
@@ -89,4 +109,6 @@ resource "aws_cloudwatch_metric_alarm" "nlbtg_health" {
   alarm_actions = [
     local.alarm_sns
   ]
+
+  depends_on = [aws_lb_target_group.this]
 }
