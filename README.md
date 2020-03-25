@@ -8,17 +8,20 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| enable\_cross\_zone\_load\_balancing | Allows the LB to send requests to multiple AZ's based on availability. NLB only | `bool` | `true` | no |
+| alarm\_sns | CW Alarm SNS | `string` | `""` | no |
+| alias | Route53 alias | `list(string)` | `[]` | no |
+| create\_alarm | Create CW Alarm | `bool` | `true` | no |
 | enable\_deletion\_protection | Toggle the deletion protection on the Load Balancer | `bool` | `false` | no |
-| internal | Sets the LB to external or internal | `bool` | `true` | no |
+| internal | Sets the LB to external or internal | `bool` | n/a | yes |
 | listner\_configuration | Load Balancer listener configuration | `list(map(any))` | `[]` | no |
-| load\_balancer\_type | Whether it is an application or network load balancer | `string` | `"network"` | no |
+| load\_balancer\_type | Whether it is an application or network load balancer | `string` | `"application"` | no |
 | name | load balancer name | `string` | n/a | yes |
 | security\_groups | IDs of security groups for Load Balancer | `list(string)` | `[]` | no |
 | subnets | List of Subnet IDs for the Load Balancer | `list(string)` | n/a | yes |
 | tags | Tags to be applied to resources | `map(any)` | `{}` | no |
 | targets | Mapping of ec2 instance ids to target\_group indecies | `list(map(any))` | `[]` | no |
 | vpc\_id | VPC ID | `string` | n/a | yes |
+| zone\_name | Route53 Zone Name | `string` | `""` | no |
 
 ## Outputs
 
