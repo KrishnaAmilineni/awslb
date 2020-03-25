@@ -5,14 +5,13 @@ variable "name" {
 
 variable "internal" {
   type        = bool
-  default     = true
   description = "Sets the LB to external or internal"
 }
 
 variable "load_balancer_type" {
   type        = string
   description = "Whether it is an application or network load balancer"
-  default     = "network"
+  default     = "application"
 }
 
 variable "security_groups" {
@@ -37,12 +36,6 @@ variable "enable_deletion_protection" {
   default     = false
 }
 
-variable "enable_cross_zone_load_balancing" {
-  type        = bool
-  description = "Allows the LB to send requests to multiple AZ's based on availability. NLB only"
-  default     = true
-}
-
 variable "tags" {
   type        = map(any)
   description = "Tags to be applied to resources"
@@ -59,4 +52,29 @@ variable "targets" {
   type        = list(map(any))
   description = "Mapping of ec2 instance ids to target_group indecies"
   default     = []
+}
+
+variable "zone_name" {
+  type        = string
+  description = "Route53 Zone Name"
+  default     = ""
+}
+
+variable "alias" {
+  type        = list(string)
+  description = "Route53 alias"
+  default     = []
+}
+
+
+variable "create_alarm" {
+  type        = bool
+  description = "Create CW Alarm"
+  default     = true
+}
+
+variable "alarm_sns" {
+  type        = string
+  description = "CW Alarm SNS"
+  default     = ""
 }
