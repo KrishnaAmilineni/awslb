@@ -6,6 +6,16 @@ resource "aws_lb" "this" {
   subnets            = var.subnets
 
   enable_deletion_protection = var.enable_deletion_protection
+  
+  dynamic "access_logs" {
+    for_each = length(keys(var.access_logs)) == 0 ? [] : [var.access_logs]
+
+    content {
+      enabled = lookup(access_logs.value, "enabled", lookup(access_logs.value, "bucket", null) != null)
+      bucket  = lookup(access_logs.value, "bucket", null)
+      prefix  = lookup(access_logs.value, "prefix", null)
+    }
+  }
 
   tags = var.tags
 }
