@@ -78,3 +78,9 @@ variable "alarm_sns" {
   description = "CW Alarm SNS"
   default     = ""
 }
+
+variable "access_logs" {
+  description = "Map containing access logging configuration for load balancer."
+  type        = map(string)
+  default     = {}
+}
